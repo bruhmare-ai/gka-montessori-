@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+/* GKA brand palette — docs/brand/brand-profile.json */
+:root {
+  --background: #fbfaf6; /* warm off-white — the template's cream base role */
+  --foreground: #1f2937;
+  --navy: #1b2a5c;
+  --green: #84bc48;
+  --green-dark: #206b50;
+  --lime: #b8e000;
+  --tint-green: #eaf6cb;
+  --tint-cyan: #d9f5f6;
+  --sky: #5b9bd5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy: var(--navy);
+  --color-brand: var(--green);
+  --color-brand-dark: var(--green-dark);
+  --color-lime: var(--lime);
+  --color-tint: var(--tint-green);
+  --color-tint-cyan: var(--tint-cyan);
+  --color-sky: var(--sky);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-script: var(--font-script);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ============================================================
+   Motion — GKA "growth" system. Calm, on-brand, unique to a
+   Montessori school (things sprout, draw on, and rise into place).
+   Fully reduced-motion safe; JS adds .gka-js so no-JS stays visible.
+   ============================================================ */
+
+/* Scroll reveal — content gently rises into place as it enters view */
+.reveal {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.gka-js .reveal {
+  opacity: 0;
+  transform: translateY(22px);
+}
+.gka-js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero — plays once on first paint (above the fold) */
+@keyframes gka-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.gka-load {
+  animation: gka-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Sprout — the brand mark draws itself and grows from its base */
+@keyframes gka-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes gka-grow {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.gka-sprout {
+  transform-origin: 50% 84%;
+}
+.gka-sprout path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.gka-sprout.is-in {
+  animation: gka-grow 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.gka-sprout.is-in .base {
+  animation: gka-draw 0.35s ease-out 0.05s forwards;
+}
+.gka-sprout.is-in .stem {
+  animation: gka-draw 0.6s ease-out 0.2s forwards;
+}
+.gka-sprout.is-in .leaf-a {
+  animation: gka-draw 0.55s ease-out 0.7s forwards;
+}
+.gka-sprout.is-in .leaf-b {
+  animation: gka-draw 0.55s ease-out 0.9s forwards;
+}
+
+/* Living primary CTA — a slow, soft breathing glow */
+@keyframes gka-breathe {
+  0%,
+  100% {
+    box-shadow: 0 8px 22px -8px color-mix(in srgb, var(--green-dark) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 13px 34px -6px color-mix(in srgb, var(--green-dark) 78%, transparent);
+  }
+}
+.cta-breathe {
+  animation: gka-breathe 3.2s ease-in-out infinite;
+}
+
+/* Ambient drifting leaves in the hero */
+@keyframes gka-float {
+  0% {
+    transform: translateY(8px) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-12px) rotate(calc(var(--r, 0deg) + 7deg));
+  }
+  100% {
+    transform: translateY(8px) rotate(var(--r, 0deg));
+  }
+}
+.gka-leaf {
+  animation: gka-float var(--dur, 14s) ease-in-out var(--delay, 0s) infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .gka-js .reveal,
+  .gka-load {
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .gka-sprout,
+  .gka-sprout.is-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .gka-sprout path {
+    stroke-dashoffset: 0 !important;
+  }
+  .cta-breathe,
+  .gka-leaf {
+    animation: none !important;
+  }
+}
